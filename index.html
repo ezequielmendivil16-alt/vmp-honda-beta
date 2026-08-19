@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="description" content="VMP-001 Honda U.S. 2015–2026 tester beta. Verified maintenance data from official Honda sources." />
+  <title>VMP-001 · Honda Tester Beta</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="appShell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">V</div>
+      <div>
+        <strong>VMP-001</strong>
+        <span>Honda Tester Beta</span>
+      </div>
+    </div>
+
+    <div class="beta-pill">Public test · Honda U.S.</div>
+
+    <nav class="side-nav" aria-label="Main navigation">
+      <button class="nav-btn active" data-view="dashboard"><span>●</span> Dashboard</button>
+      <button class="nav-btn" data-view="finder"><span>●</span> Find My Honda</button>
+      <button class="nav-btn" data-view="maintenance"><span>●</span> Maintenance</button>
+      <button class="nav-btn" data-view="sources"><span>●</span> Honda Sources</button>
+      <button class="nav-btn" data-view="feedback"><span>●</span> Feedback</button>
+      <button class="nav-btn" data-view="about"><span>●</span> About Beta</button>
+    </nav>
+
+    <div class="sidebar-foot">
+      <div>Dataset: Honda U.S. 2015–2026</div>
+      <div id="sidebarVersion">Beta 0.1</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <button id="menuButton" class="icon-button" aria-label="Open menu">☰</button>
+        <div>
+          <h1 id="pageTitle">Dashboard</h1>
+          <p id="pageSubtitle">Honda maintenance data tester</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <span class="status-chip"><span class="status-dot"></span> Static beta</span>
+        <button id="themeButton" class="secondary-button" type="button">Dark mode</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <section class="view active" id="dashboardView">
+        <section class="hero panel hero-grid">
+          <div>
+            <div class="eyebrow">VEHICLE MAINTENANCE PRO</div>
+            <h2>Test real Honda maintenance data before we scale VMP.</h2>
+            <p>This beta exposes only Honda model-years that passed the project's publication rule. It does not invent a normal mileage interval when Honda says to follow Maintenance Minder.</p>
+            <div class="hero-actions">
+              <button class="primary-button" data-go="finder">Start with my Honda</button>
+              <button class="secondary-button" data-go="about">How the data works</button>
+            </div>
+          </div>
+          <div class="hero-card">
+            <div class="mini-label">Beta scope</div>
+            <strong id="heroScope">Honda U.S. 2015–2026</strong>
+            <span>Manual model/profile selection · local browser storage · official source links</span>
+          </div>
+        </section>
+
+        <section class="stats-grid" aria-label="Dataset statistics">
+          <article class="stat-card"><span>Public model-years</span><strong id="publishedCount">—</strong><small>PUBLISHED only</small></article>
+          <article class="stat-card"><span>Public Honda families</span><strong id="publicFamilyCount">—</strong><small>available to testers</small></article>
+          <article class="stat-card"><span>Mechanical profiles</span><strong id="profileCount">—</strong><small>public subset</small></article>
+          <article class="stat-card"><span>Official source records</span><strong id="sourceCount">—</strong><small>included in this build</small></article>
+        </section>
+
+        <section class="two-col">
+          <article class="panel section-card">
+            <div class="section-heading"><div><span class="eyebrow">WHAT TESTERS CAN DO</span><h3>Small, useful, measurable test</h3></div></div>
+            <div class="feature-list">
+              <div><b>1</b><span><strong>Choose a Honda.</strong><small>Year, family and mechanical profile.</small></span></div>
+              <div><b>2</b><span><strong>Read the actual rule set.</strong><small>Maintenance Minder code, severe-use exceptions and maximum time only where documented.</small></span></div>
+              <div><b>3</b><span><strong>Open the Honda source.</strong><small>Every selected vehicle shows the official records used by the dataset.</small></span></div>
+              <div><b>4</b><span><strong>Send feedback.</strong><small>Copy or download a structured report without a backend.</small></span></div>
+            </div>
+          </article>
+
+          <article class="panel section-card">
+            <div class="section-heading"><div><span class="eyebrow">PUBLIC BETA RULE</span><h3>What is deliberately hidden</h3></div></div>
+            <div class="notice warning"><strong>Partial, pending and blocked model-years are not offered to testers.</strong><p>That prevents the beta from filling gaps by similarity or by assuming that two model-years share the same maintenance schedule.</p></div>
+            <div class="status-breakdown" id="statusBreakdown"></div>
+          </article>
+        </section>
+      </section>
+
+      <section class="view" id="finderView">
+        <section class="panel section-card">
+          <div class="section-heading split">
+            <div><span class="eyebrow">HONDA FINDER</span><h2>Select the exact vehicle profile</h2><p>The beta does not decode VINs yet. Select the vehicle manually so no configuration is guessed.</p></div>
+            <span class="verified-badge">PUBLISHED data only</span>
+          </div>
+          <div class="form-grid three">
+            <label><span>Model year</span><select id="yearSelect"></select></label>
+            <label><span>Honda family</span><select id="familySelect"></select></label>
+            <label><span>Mechanical profile</span><select id="profileSelect"></select></label>
+          </div>
+          <div class="form-grid two optional-grid">
+            <label><span>Current odometer <small>(optional)</small></span><div class="input-suffix"><input id="mileageInput" type="number" min="0" max="1000000" step="1" placeholder="e.g. 42350" /><span>mi</span></div></label>
+            <label><span>VIN <small>(optional, local only)</small></span><input id="vinInput" type="text" maxlength="17" autocomplete="off" spellcheck="false" placeholder="17 characters" /></label>
+          </div>
+          <div class="privacy-note">Your VIN and odometer are stored only in this browser's local storage. They are not included in the public dataset and this beta has no server.</div>
+          <div class="form-actions"><button id="saveVehicleButton" class="primary-button">Use this Honda</button><button id="clearVehicleButton" class="secondary-button">Clear local vehicle</button></div>
+        </section>
+        <section id="vehiclePreview" class="panel section-card selected-vehicle empty-state"><div class="empty-icon">H</div><h3>Select a Honda above</h3><p>Once selected, VMP will show its exact public profile, maintenance rules and Honda source records.</p></section>
+      </section>
+
+      <section class="view" id="maintenanceView">
+        <div id="maintenanceNoVehicle" class="panel section-card empty-state"><div class="empty-icon">M</div><h3>No Honda selected yet</h3><p>Choose a vehicle first so the app can load the correct rule set.</p><button class="primary-button" data-go="finder">Find my Honda</button></div>
+        <div id="maintenanceContent" class="hidden">
+          <section class="vehicle-banner panel" id="maintenanceVehicleBanner"></section>
+          <section class="two-col maintenance-tools">
+            <article class="panel section-card">
+              <div class="section-heading"><div><span class="eyebrow">DASHBOARD INPUT</span><h3>Maintenance Minder code</h3></div></div>
+              <p class="muted">Enter the code currently displayed by the Honda, for example <b>A1</b>, <b>B12</b> or <b>B7</b>. The app only decodes tasks that exist in the selected official rule set.</p>
+              <div class="code-row"><input id="minderCodeInput" type="text" maxlength="12" placeholder="B12" autocomplete="off" /><button id="decodeCodeButton" class="primary-button">Decode</button></div>
+              <div id="decodedCodeResult" class="decoded-result"></div>
+            </article>
+            <article class="panel section-card">
+              <div class="section-heading"><div><span class="eyebrow">OIL LIFE</span><h3>Record what the car shows</h3></div></div>
+              <p class="muted">VMP does not calculate Honda oil life in this beta. You can record the dashboard percentage for your test notes.</p>
+              <div class="oil-life-row"><input id="oilLifeInput" type="range" min="0" max="100" step="1" value="100" /><output id="oilLifeOutput">100%</output></div>
+              <div class="notice info"><strong>Use the vehicle's own Maintenance Minder as the trigger.</strong><p>Fixed mileage appears below only when the Honda source explicitly defines a severe-use exception or maximum time.</p></div>
+            </article>
+          </section>
+          <section class="panel section-card">
+            <div class="section-heading split"><div><span class="eyebrow">OFFICIAL RULE SET</span><h2 id="ruleSetTitle">Maintenance rules</h2><p id="ruleSetSubtitle"></p></div><span class="verified-badge">Honda-source backed</span></div>
+            <div class="table-wrap"><table class="rules-table"><thead><tr><th>Code</th><th>Component</th><th>Action</th><th>Trigger</th><th>Documented limit / exception</th><th>Condition / note</th></tr></thead><tbody id="rulesTableBody"></tbody></table></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="view" id="sourcesView">
+        <section class="panel section-card">
+          <div class="section-heading split"><div><span class="eyebrow">TRACEABILITY</span><h2>Official Honda sources for the selected model-year</h2><p>Open the exact Honda records that support the current published entry.</p></div><button class="secondary-button" id="showGeneralSourceButton">Honda Minder overview</button></div>
+          <div id="sourcesNoVehicle" class="empty-state compact"><div class="empty-icon">S</div><h3>Select a Honda first</h3><p>The source list will be filtered to that published model-year.</p></div>
+          <div id="sourceList" class="source-list hidden"></div>
+        </section>
+      </section>
+
+      <section class="view" id="feedbackView">
+        <section class="panel section-card feedback-card">
+          <div class="section-heading split"><div><span class="eyebrow">BETA FEEDBACK</span><h2>Tell us what is right, wrong or confusing</h2><p>This build has no server. Use the buttons below to copy a report or download it as JSON, then send it to the project owner through your normal channel.</p></div><span class="beta-pill inline">Tester report</span></div>
+          <div class="feedback-vehicle" id="feedbackVehicleSummary">No vehicle selected.</div>
+          <div class="form-grid two"><label><span>Tester name <small>(optional)</small></span><input id="testerNameInput" type="text" placeholder="Name or nickname" /></label><label><span>Ease of use</span><select id="easeSelect"><option value="5">5 — Very easy</option><option value="4">4 — Easy</option><option value="3">3 — Okay</option><option value="2">2 — Difficult</option><option value="1">1 — Very difficult</option></select></label></div>
+          <label class="full-field"><span>What looked correct?</span><textarea id="correctFeedback" rows="4" placeholder="Vehicle details, maintenance code, source, layout..."></textarea></label>
+          <label class="full-field"><span>What looked wrong or missing?</span><textarea id="wrongFeedback" rows="4" placeholder="Be specific if a trim, engine, rule or source seems wrong."></textarea></label>
+          <label class="full-field"><span>What should we improve before the next test?</span><textarea id="improveFeedback" rows="4" placeholder="Feature, wording, navigation, data, mobile experience..."></textarea></label>
+          <div class="form-actions"><button id="copyFeedbackButton" class="primary-button">Copy feedback report</button><button id="downloadFeedbackButton" class="secondary-button">Download JSON</button></div><div id="feedbackStatus" class="action-status" role="status"></div>
+        </section>
+      </section>
+
+      <section class="view" id="aboutView">
+        <section class="panel section-card">
+          <div class="section-heading"><div><span class="eyebrow">VMP-001 METHOD</span><h2>What this beta is — and is not</h2></div></div>
+          <div class="about-grid">
+            <article><h3>Purpose</h3><p>Put a real, shareable product in front of Honda owners now, gather feedback, and improve VMP while the broader vehicle database continues to grow.</p></article>
+            <article><h3>Publication rule</h3><p>Only annual rows marked <b>PUBLISHED</b> are selectable. PARTIAL, VERIFIED_PROFILE_PENDING_ANNUAL and BLOCKED_SOURCE entries remain hidden from testers.</p></article>
+            <article><h3>Maintenance timing</h3><p>Honda uses Maintenance Minder for most normal service timing. This beta does not convert those codes into made-up universal mileage intervals.</p></article>
+            <article><h3>VIN limitation</h3><p>VIN decoding is not implemented yet. The VIN field is optional and local-only; the tester confirms the year, family and mechanical profile manually.</p></article>
+            <article><h3>Privacy</h3><p>No personal vehicle is hard-coded. Browser state stays local unless the tester chooses to copy or download a feedback report.</p></article>
+            <article><h3>Safety</h3><p>This is a beta maintenance organizer, not a substitute for the owner's manual, Maintenance Minder display, service information, recalls or professional diagnosis.</p></article>
+          </div>
+        </section>
+        <section class="panel section-card"><div class="section-heading"><div><span class="eyebrow">CURRENT COVERAGE</span><h3>Honda families available to testers</h3></div></div><div id="coverageMatrix" class="coverage-matrix"></div></section>
+      </section>
+    </div>
+  </main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<div id="mobileBackdrop" class="mobile-backdrop"></div>
+<script src="vehicles.js"></script>
+<script src="maintenance.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
